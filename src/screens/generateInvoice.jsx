@@ -17,6 +17,7 @@ import Button from '../components/Button';
 import {useNavigation} from '@react-navigation/native';
 import RRRModal from '../components/rrrModal';
 import {saveRRR, updateLevel} from '../redux/slice/user/userSlice';
+import PaymentModal from '../components/paymentModal';
 
 const GenerateInvoice = ({
   route: {
@@ -27,20 +28,14 @@ const GenerateInvoice = ({
   const dispatch = useDispatch();
   const {user, rrr} = useSelector(state => state.user);
   const [visible, setVisible] = useState(false);
+  const [payVisible, setPayVisible] = useState(false);
   const [rrrValue, setRRRValue] = useState(rrr);
   const [modal, setModal] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const handleClick = () => {
     setVisible(false);
-    setLoading(true);
-    setModal(true);
-    const newLevel = parseInt(user?.level) + 100;
-    dispatch(updateLevel(`${newLevel}`));
-
-    setTimeout(() => {
-      setLoading(false);
-    }, 3000);
+    setPayVisible(true);
   };
 
   const generate = () => {
@@ -55,6 +50,17 @@ const GenerateInvoice = ({
     navigation.replace('Home');
   };
 
+  const handlePayWithCard = () => {
+    setPayVisible(false);
+    setLoading(true);
+    setModal(true);
+    const newLevel = parseInt(user?.level) + 100;
+    dispatch(updateLevel(`${newLevel}`));
+
+    setTimeout(() => {
+      setLoading(false);
+    }, 3000);
+  };
   return (
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
       <Ionicons
@@ -201,6 +207,11 @@ const GenerateInvoice = ({
         rrrValue={rrrValue}
         close={() => setVisible(false)}
       />
+      <PaymentModal
+        visible={payVisible}
+        click={handlePayWithCard}
+        close={() => setPayVisible(false)}
+      />
       <Modal visible={modal} style={{flex: 1}}>
         {loading ? (
           <View
@@ -225,8 +236,11 @@ const GenerateInvoice = ({
               size={widthRes(20)}
               style={{marginVertical: heightRes(1)}}
             />
+            <Text style={textStyle.defaultBoldHeadline}>
+              Payment Successful
+            </Text>
             <Text style={textStyle.defaultRegularBody}>
-              Congratulations you have paid your school Fees
+              you have paid your school fees for {level} level
             </Text>
             <Button
               title="Proceed"

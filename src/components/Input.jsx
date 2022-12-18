@@ -12,6 +12,7 @@ const Input = ({
   error,
   secure,
   maxlength,
+  containerStyle
 }) => {
   return (
     <>
@@ -21,6 +22,7 @@ const Input = ({
           {
             borderColor: error ? colors.red : colors.gray,
           },
+          containerStyle
         ]}>
         <TextInput
           placeholder={placeholder}
